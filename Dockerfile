@@ -22,7 +22,7 @@ ENV PATH="$PATH:/root/.local/bin"
 COPY requirements.txt .
 
 # Set the entrypoint
-ENTRYPOINT ["python", "-m", "autogpt", "--install-plugin-deps"]
+ENTRYPOINT ["uvicorn", "--app-dir", "/app/slack", "app:app", "--host", "0.0.0.0", "--port", "30207", "--reload"]
 
 # dev build -> include everything
 FROM autogpt-base as autogpt-dev

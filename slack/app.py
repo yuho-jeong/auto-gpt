@@ -32,6 +32,7 @@ client.retry_handlers.append(rate_limit_handler)
 
 thread_ts2pids = defaultdict(list)
 
+
 def user_message2ai_settings(user_message, api_budget=1, infer=False):
     if infer:
         prompt = f"""
@@ -82,7 +83,7 @@ Response:
             api_key=os.getenv('OPENAI_API_KEY')
         )
         data = json.loads(response.choices[0]['message']['content'])
-        ai_goals_str = '\n'.join(['- ' + goal for goal in  data['ai_goals']])
+        ai_goals_str = '\n'.join(['- ' + goal for goal in data['ai_goals']])
         ai_settings = f"""
 ai_name: {data['ai_name']}
 ai_role: {data['ai_role']}
@@ -103,6 +104,7 @@ ai_goals:
 api_budget: {api_budget}"""
     return ai_settings
 
+
 def format_stdout(stdout):
     text = stdout.decode()
     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
@@ -116,6 +118,7 @@ def format_stdout(stdout):
     prefixes = ('REASONING', 'PLAN', '- ', 'CRITICISM', 'SPEAK', 'NEXT ACTION', 'SYSTEM', '$ SPENT', 'BROWSING')
     if text.startswith(prefixes):
         return text
+
 
 def process_user_message(user_message):
     # Remove @AutoAskUp from message
@@ -143,6 +146,7 @@ def process_user_message(user_message):
 
     return user_message, options
 
+
 @retry(wait=wait_random_exponential(min=1, max=10), stop=stop_after_attempt(6))
 def upload_files(channel, thread_ts, fname, file):
     upload_text_file = client.files_upload(
@@ -153,8 +157,8 @@ def upload_files(channel, thread_ts, fname, file):
     )
     return upload_text_file
 
+
 def run_autogpt_slack(user_message, options, channel, thread_ts):
-    
     # Make workspace folder and write ai_settings.yaml in it
     now = datetime.datetime.now()
     date_str = now.strftime("%Y-%m-%d_%H-%M-%S")
@@ -170,7 +174,8 @@ def run_autogpt_slack(user_message, options, channel, thread_ts):
     # Run autogpt
     main_dir = os.path.dirname(os.getcwd())
     process = subprocess.Popen(
-        ["python", os.path.join(main_dir, 'slack', 'api.py'), os.path.join(main_dir, workspace), str(options['gpt3_only'])],
+        ["python", os.path.join(main_dir, 'slack', 'api.py'), os.path.join(main_dir, workspace),
+         str(options['gpt3_only'])],
         cwd=main_dir,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE
@@ -183,7 +188,7 @@ def run_autogpt_slack(user_message, options, channel, thread_ts):
         text=ai_settings_message,
         thread_ts=thread_ts
     )
-    
+
     # add to pid
     thread_ts2pids[thread_ts].append(process.pid)
     print('thread_ts2pids', thread_ts2pids)
@@ -293,9 +298,9 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
 
     data = json.loads(body)
     user_message, options = process_user_message(data['event']['text'])
-    event = data['event']  
+    event = data['event']
     thread_ts = event['thread_ts'] if 'thread_ts' in event else event['ts']
-    
+
     if user_message.lower() == 'stop':
         # If stop command, kill process
         if thread_ts not in thread_ts2pids:
@@ -315,7 +320,7 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
             thread_ts=thread_ts
         )
         return JSONResponse(content="AutoGPT is stopped.")
-    
+
     background_tasks.add_task(run_autogpt_slack, user_message, options, event['channel'], thread_ts)
     start_message = "Preparing to launch AutoGPT..."
     if options['debug']:
@@ -330,6 +335,7 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
         thread_ts=thread_ts
     )
     return JSONResponse(content="Launched AutoGPT.")
+
 
 @app.get("/")
 async def index():
