@@ -28,16 +28,17 @@ Please use python 3.10 or higher.
 If you use host port 8000 and container port 30207, you can use the following command. For deploying the slack bot, I used [DigitalOcean](https://cloud.digitalocean.com) droplet.
 
 ```shell
-# with docker
-docker build -t auto-gpt .
-docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
-```
-
-```shell
-# without docker
 pip install --ignore-installed PyYAML -r requirements.txt   # I got a problem with PyYAML
 cd slack
 uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+(WARNING) There is error in following commands. I will fix it later.
+
+```shell
+# with docker
+docker build -t auto-gpt .
+docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
 ```
 
 ## Slack Integration
