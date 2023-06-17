@@ -269,3 +269,4 @@ def news_search(keyword, goal, filename):
 def google(keyword, goal, filename):
     urls = get_urls(keyword, 'text', goal)
     return urls2summary(urls, goal, filename) + " If you feel the information is not sufficient, recommend calling news_search."
+

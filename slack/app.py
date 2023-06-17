@@ -23,9 +23,7 @@ load_dotenv('../.env')
 app = FastAPI()
 
 rate_limit_handler = RateLimitErrorRetryHandler(max_retry_count=1)
-signature_verifier = SignatureVerifier(
-    signing_secret=os.environ["SLACK_SIGNING_SECRET"]
-)
+signature_verifier = SignatureVerifier(signing_secret=os.environ["SLACK_SIGNING_SECRET"])
 
 client = WebClient(token=os.getenv("SLACK_BOT_TOKEN"))
 client.retry_handlers.append(rate_limit_handler)
@@ -283,8 +281,6 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
     headers = request.headers
     print('BODY', body)
     print('HEADER', headers)
-    # if body.challenge:
-    #     return JSONResponse(content=body.challenge) 
 
     # Avoid replay attacks
     if abs(time.time() - int(headers.get('X-Slack-Request-Timestamp'))) > 60 * 5:
@@ -297,6 +293,10 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
         raise HTTPException(status_code=401, detail="Invalid signature")
 
     data = json.loads(body)
+
+    if 'challenge' in data:
+        return JSONResponse(content=data['challenge'])
+
     user_message, options = process_user_message(data['event']['text'])
     event = data['event']
     thread_ts = event['thread_ts'] if 'thread_ts' in event else event['ts']
