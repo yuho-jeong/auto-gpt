@@ -48,9 +48,10 @@ docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
    - `SLACK_SIGNING_SECRET`: slack API app page / Basic Information / App Credentials / Signing Secret
    - `SLACK_BOT_TOKEN`: slack API app page / Features / OAuto & Permissions / Bot User OAuth Token
 
-3. Set Bot Token Scopes: `files:write` 
-4. Set Event Subscriptions: `app_mention`
-5. Add slack bot to your channel and Mention your slack bot with a command
+3. Change `<@U05C61LM9FW>` in `slack/app.py` to your slack bot id.
+4. Set Bot Token Scopes: `files:write` 
+5. Set Event Subscriptions: `app_mention`
+6. Add slack bot to your channel and Mention your slack bot with a command
 
 ## Commands
 - `@bot_name !{context}`: Using GPT-4 (GPT-4 API access permission required)

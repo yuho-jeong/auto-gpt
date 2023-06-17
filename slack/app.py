@@ -120,7 +120,7 @@ def format_stdout(stdout):
 
 def process_user_message(user_message):
     # Remove @AutoAskUp from message
-    user_message = user_message.replace('<@U058EM1SCEQ>', '').strip()
+    user_message = user_message.replace('<@U05C61LM9FW>', '').strip()
     # Extract options from message
     options = {
         'debug': False,
