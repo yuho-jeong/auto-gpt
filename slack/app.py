@@ -301,7 +301,7 @@ async def slack_events(request: Request, background_tasks: BackgroundTasks):
     event = data['event']
     thread_ts = event['thread_ts'] if 'thread_ts' in event else event['ts']
 
-    if '?stop' in user_message.lower():
+    if user_message.lower() == 'stop':
         # If stop command, kill process
         if thread_ts not in thread_ts2pids:
             client.chat_postMessage(

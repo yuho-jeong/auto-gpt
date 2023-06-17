@@ -29,6 +29,7 @@ If you use host port 8000 and container port 30207, you can use the following co
 
 ```shell
 pip install --ignore-installed PyYAML -r requirements.txt   # I got a problem with PyYAML
+apt-get install -y libglib2.0 libnss3 libgconf-2-4 libfontconfig1 chromium-driver
 cd slack
 uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -57,4 +58,4 @@ docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
 - `@bot_name !{context}`: Using GPT-4 (GPT-4 API access permission required)
 - `@bot_name %{context}`: Using GPT-3.5 
 - `@bot_name ?{context}`: Debugging mode
-- `@bot_name ?stop`: Stop AutoGPT in current thread. Type this command in the target thread as comment.
+- `@bot_name stop`: Stop AutoGPT in current thread. Type this command in the target thread as comment.

@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y \
 # Install utilities
 RUN apt-get install -y curl jq wget git
 
+RUN apt-get update && apt-get install -y \
+    chromium-driver firefox-esr \
+    ca-certificates \
+    libglib2.0 libnss3 libgconf-2-4 libfontconfig1
+
 # Set environment variables
 ENV PIP_NO_CACHE_DIR=yes \
     PYTHONUNBUFFERED=1 \
@@ -38,5 +43,6 @@ WORKDIR /app
 ONBUILD COPY autogpt/ ./autogpt
 ONBUILD COPY scripts/ ./scripts
 ONBUILD COPY plugins/ ./plugins
+ONBUILD COPY slack/ ./slack
 
 FROM autogpt-${BUILD_TYPE} AS auto-gpt
