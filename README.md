@@ -53,8 +53,7 @@ docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
 5. Add slack bot to your channel and Mention your slack bot with a command
 
 ## Commands
-
-- `@bot_name ?{context}`: Debugging mode
 - `@bot_name !{context}`: Using GPT-4 (GPT-4 API access permission required)
 - `@bot_name %{context}`: Using GPT-3.5 
-- `@bot_name -`: TBU
+- `@bot_name ?{context}`: Debugging mode
+- `@bot_name ?stop`: Stop AutoGPT in current thread. Type this command in the target thread as comment.
