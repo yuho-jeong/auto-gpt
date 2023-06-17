@@ -1,20 +1,12 @@
 # AutoGPT: An Autonomous GPT-4 Experiment
 
-I removed the original README.md and added my own README.md for the simplicity.
+- Forked from: https://github.com/ChatGPTUp/Auto-GPT
+- I removed the original README.md and added my own README.md for the simplicity.
+- Recommend to see [the original repository of AutoGPT](https://github.com/Significant-Gravitas/Auto-GPT) for the installation and usage.
 
-## Installation
+## Quick Start
 
-Please see the [documentation][docs] for full setup instructions and configuration options.
-
-1. Check out the [wiki](https://github.com/Significant-Gravitas/Auto-GPT/wiki)
-2. Get an OpenAI [API Key](https://platform.openai.com/account/api-keys)
-3. Download this repository or [latest release](https://github.com/Significant-Gravitas/Auto-GPT/releases/latest) or [modified version of UpstageAI](https://github.com/ChatGPTUp/Auto-GPT)
-4. Follow the [installation instructions](https://docs.agpt.co/setup/)
-5. Configure any additional features you want, or install some [plugins](https://docs.agpt.co/plugins/)
-
-### Setup
-
-You have to set initial parameters in `.env` file.
+You have to set variables in `.env` file.
 
 ```shell
 OPENAI_API_KEY=${YOUR_OPENAI_API_KEY}
@@ -22,7 +14,7 @@ SLACK_SIGNING_SECRET=${YOUR_SLACK_SIGNING_SECRET}
 SLACK_BOT_TOKEN=${YOUR_SLACK_BOT_TOKEN}
 ```
 
-## Run in Terminal
+### Run in Terminal
 
 Please use python 3.10 or higher.
 
@@ -31,24 +23,37 @@ Please use python 3.10 or higher.
 ./run.sh 
 ```
 
-## Run FastAPI Server
+### Run FastAPI Server
 
-If you use host port 8000 and container port 30207, you can use the following command.
+If you use host port 8000 and container port 30207, you can use the following command. For deploying the slack bot, I used [DigitalOcean](https://cloud.digitalocean.com) droplet.
 
 ```shell
+# with docker
 docker build -t auto-gpt .
 docker run -it -p 8000:30207 --env-file=.env -v $PWD:/app --rm auto-gpt
 ```
 
-I used DigitalOcean to deploy FastAPI server.
-
-1. Login to https://cloud.digitalocean.com
-2. Create a droplet. I used Ubuntu 22.04 - Basic/Premium Intel/14$ option.
+```shell
+# without docker
+pip install --ignore-installed PyYAML -r requirements.txt   # I got a problem with PyYAML
+cd slack
+uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+```
 
 ## Slack Integration
 
-TBU
+1. Create Slack Bot: https://api.slack.com
+2. Add keys in `.env` file
+   - `SLACK_SIGNING_SECRET`: slack API app page / Basic Information / App Credentials / Signing Secret
+   - `SLACK_BOT_TOKEN`: slack API app page / Features / OAuto & Permissions / Bot User OAuth Token
 
-- https://jaeyung1001.tistory.com/entry/Slack-ChatGPT-Slack-챗봇-만들기-1편
-- https://jaeyung1001.tistory.com/entry/Slack-ChatGPT-Slack-챗봇-만들기-2편
-- https://jaeyung1001.tistory.com/entry/Slack-ChatGPT-Slack-챗봇-만들기-3편
+3. Set Bot Token Scopes: `files:write` 
+4. Set Event Subscriptions: `app_mention`
+5. Add slack bot to your channel and Mention your slack bot with a command
+
+## Commands
+
+- `@bot_name ?{context}`: Debugging mode
+- `@bot_name !{context}`: Using GPT-4 (GPT-4 API access permission required)
+- `@bot_name %{context}`: Using GPT-3.5 
+- `@bot_name -`: TBU

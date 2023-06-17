@@ -14,7 +14,7 @@
     ```
     pip install -r requirements.txt
     ```
-4. Run server (at ai platform 172.16.201.33)
+4. Run server
     ```
     nohup uvicorn app:app --host 0.0.0.0 --port 30207 --reload &
     ```
